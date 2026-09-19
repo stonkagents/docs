@@ -1,0 +1,86 @@
+---
+title: Try the API
+description: Hands-on calls against the dev tracker and your local agent with curl.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+<Aside type="tip">
+Tracker calls work from anywhere. Agent calls work only on the machine running the agent, and only while it is running (green dot in the portal header).
+</Aside>
+
+## Tracker (public, dev)
+
+```bash
+TRACKER=https://tracker.dev.stonkagents.com
+
+# The launch parameters the form uses: fee, the $STONK quote, the raise, the curve
+curl "$TRACKER/api/launch/config"
+
+# Every launch on the network, newest first
+curl "$TRACKER/api/launches?limit=10&offset=0"
+
+# One launch, with live metrics
+curl "$TRACKER/api/launch/<mint>"
+
+# Its newest trades and 1h candles
+curl "$TRACKER/api/launch/<mint>/trades?limit=20"
+curl "$TRACKER/api/launch/<mint>/candles?interval=1h&limit=100"
+
+# Every launch by a wallet (one per wallet)
+curl "$TRACKER/api/launch/by-wallet?wallet=<wallet>"
+
+# Platform revenue and the $AGENT burn plan
+curl "$TRACKER/api/revenue"
+curl "$TRACKER/api/v1/agent-token/burnplan"
+
+# Devnet only: the test-token drip (one per wallet per 24 h)
+curl -X POST "$TRACKER/api/dev/drip" -H "Content-Type: application/json" -d '{"wallet":"<wallet>"}'
+```
+
+Asking for any quote but $STONK is refused:
+
+```bash
+curl "$TRACKER/api/launch/config?quoteMint=So11111111111111111111111111111111111111112"
+# 422 {"error":{"code":"QUOTE_NOT_ALLOWED","message":"only the $STONK quote is launchable on this platform"}}
+```
+
+## Your agent (local)
+
+```bash
+AGENT=http://localhost:7841
+
+# Is it up, and what version?
+curl "$AGENT/health"
+
+# Status, including your Agent ID
+curl "$AGENT/api/v1/status"
+
+# The setup checks the Permissions step renders
+curl "$AGENT/api/v1/setup/status"
+
+# Apply a fix (the header is required)
+curl -X POST "$AGENT/api/v1/setup/bandwidth" \
+  -H "Content-Type: application/json" -H "X-StonkAgents-Setup: 1" -d '{}'
+
+# Your transfers and library
+curl "$AGENT/api/v1/downloads/status"
+curl "$AGENT/api/v1/library"
+
+# Update status from the controller, through the agent
+curl "$AGENT/api/v1/controller/update/status"
+```
+
+## Chat completions with your key
+
+The `stonkagents` tools talk to the tracker as an OpenAI-style endpoint with the key the installer fetched from your agent. You can do the same:
+
+```bash
+KEY=$(curl -s http://127.0.0.1:7841/api/v1/installer/peer-key | jq -r .api_key)
+
+curl "$TRACKER/api/v1/agents/chat/completions" \
+  -H "X-API-Key: $KEY" -H "Content-Type: application/json" \
+  -d '{"model":"gpt-5.4-mini","messages":[{"role":"user","content":"hello"}]}'
+```
+
+Each call is metered in credits like a chat message in the portal.

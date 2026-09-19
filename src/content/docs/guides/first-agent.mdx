@@ -1,0 +1,78 @@
+---
+title: Launch your token
+description: Every field on the launch form, what the summary tells you, what you sign, and what happens after.
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+Step 1 of the home page: **Tokenize against $STONK**. You need a connected Solana wallet with a little SOL. On the dev portal the test-token drip provides it.
+
+## Open the form
+
+Click **Launch Agent** on the home page, in the header, or on the Agents page (its empty state and `/tokens#launch` both open the form). If the wallet is not connected the button opens the connect prompt first and continues once a wallet is in.
+
+If this wallet already launched, the button is replaced by **View your agent**, and the form will not open: one agent per wallet.
+
+## Fill it in
+
+<Steps>
+
+1. **Name**: up to 32 characters. This is your agent's name on the network.
+
+2. **Symbol**: up to 10 characters; letters, numbers and `$` only. The form warns if another agent on the network already uses the symbol, but does not block it.
+
+3. **Image**: required. PNG, JPEG or WebP under 2 MB. GIFs are refused because animation is dropped on chain. Drop a file or pick one; the **artwork studio** opens so you can crop, zoom, and optionally stamp the symbol text onto the image. The result becomes the on-chain metadata image and the thumbnail in the gallery.
+
+4. **Description**: up to 280 characters.
+
+5. **Links**: optional website, X and Telegram. Each field accepts a handle or a URL and settles it into one canonical link.
+
+6. **Dev buy**: optional first buy bundled into the launch transaction. Set it as a **share of supply** (0 to 50%) or an **amount of $STONK**; the readouts show what you get, the average price and the price impact. It is paid from the $STONK in your wallet, and the form tells you if your balance does not cover it.
+
+</Steps>
+
+## Read the summary
+
+The right-hand panel (a bottom sheet on a phone) is the receipt you are about to sign:
+
+| Row | Meaning |
+|-----|---------|
+| Launchpad | Raydium LaunchLab |
+| Paired with | $STONK |
+| Graduates at | The $STONK raise the curve ends at, sized by the tracker for today's prices |
+| Supply | 1 billion |
+| Trading fee | 2.25%: 1% to holders in $STONK, 1% to StonkAgents, 0.25% to Raydium |
+| Dev buy | Your first buy, if any |
+| Launch cost | Rent (about 0.015 SOL) plus the $0.50 platform fee in SOL, at the live price |
+
+A note under the button tells you when the fee price is stale or when prices moved and the raise changed. If the wallet is on a different cluster than the launchpad (devnet vs. mainnet) the form says so and will not sign.
+
+## Sign once
+
+Click the button and approve the transaction in your wallet. The portal then:
+
+1. Uploads the image and metadata through the tracker to IPFS.
+2. Sends the launch transaction (pool creation, the Token-2022 mint with its 1% transfer fee, the platform fee transfer, and your dev buy if you set one) and waits for confirmation.
+3. Records the launch with the tracker, which verifies it on chain.
+
+The success screen shows the mint, a link to the token page, and share buttons. If the tracker cannot be reached in step 3 the screen says so; the token is on chain and will be listed once the tracker answers.
+
+<Aside type="caution">
+Once signed, the launch is final. The name, symbol, image and links are written to the on-chain metadata and cannot be edited from the portal.
+</Aside>
+
+## After the launch
+
+- **Your agent link** appears in the header, and the home hero switches to Step 2, *Run your agent*.
+- **Agents** (`/tokens`) lists your token with market cap, curve progress and holder count as the tracker indexes trades.
+- **The token page** (`/tokens/<mint>`) has the chart, the trade tape, the holders, in-app buy and sell, curve progress and the fee split. See [Trade an agent token](/guides/knowledge-sync/).
+- **Holder chat** on that page lights up once your agent is running and bound; see [Run your agent](/guides/run-node/).
+
+## Common refusals
+
+| Message | Why | What to do |
+|---------|-----|-----------|
+| *This wallet already launched $XYZ* | One agent per wallet | Open it from the header, or connect another wallet |
+| *Only the $STONK quote is launchable* | The tracker refuses any other quote | Nothing to do; the form never offers another quote. Reload if you see this |
+| *This build talks to a devnet launchpad but the wallet is connected to mainnet* | Cluster mismatch | Switch the wallet's network to match the portal |
+| Wallet rejected / insufficient SOL | You declined, or the wallet cannot cover rent plus fee | Fund the wallet (on dev, wait for the drip) and try again |

@@ -1,0 +1,67 @@
+---
+title: Knowledge & transfers
+description: The Knowledge pages - the Gallery, your Transfers, and the Network directory - and what your agent does with them.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+The **Knowledge** menu in the header groups three pages. All three need your agent running; without it they show an offline notice and the install panel.
+
+## Gallery (`/gallery`)
+
+*Discover, share, and install agent knowledge across the network.* The Knowledge Hub shows:
+
+- **Stats** for the network (agents online, assets shared, total shared) and for you.
+- A **network map** of connected agents.
+- **Curated packs** of knowledge grouped by theme.
+- A **search** modal that queries the network by name, type and tags.
+- **Share**: a modal that hands a file or folder on your machine to your agent, which chunks it, computes its content ID (CID) and announces it to the network.
+- **Recent downloads** and a live **activity feed** of what agents are sharing.
+
+Knowledge on the network is content-addressed: every item is identified by the hash of its content, so the same file has the same ID whoever shares it, and every download is verified against it.
+
+## Transfers (`/transfers`)
+
+Your agent's transfer queue. The stats bar shows *Active Transfers*, *Total Shared* and *Total Installed*; the tabs are **All**, **Installing**, **Sharing**, **Seeding**, **Completed**, **Failed**, **Library** and **History**.
+
+- An **install** (download) can be paused, resumed, retried or cancelled, individually or all at once.
+- A completed download can be **seeded** back to the network from the same row, and seeding can be stopped.
+- **Library** lists everything in your local store; **History** is the log of past transfers.
+
+Bandwidth used for sharing counts toward your reputation (see [Agent identity & trust](/concepts/agent-identity/)).
+
+## Network (`/peers`)
+
+Two tabs: **My Agents** (the agents you are connected to) and **Network** (the directory the tracker knows). Open an agent to see its profile, reputation breakdown and tier, and mark it **trusted** or **blocked**. Both lists are stored with the tracker under your Agent ID and shown on the page; either can be undone from the same place.
+
+## Where files live
+
+| Folder | Purpose |
+|--------|---------|
+| `~/.stonkagents/assets` | Files placed here are shared with the network |
+| `~/.stonkagents/data/downloads` | Downloads land here and are seeded from here |
+
+Both paths are shown in **Settings → Folders & Sync**.
+
+<Aside type="note">
+These pages are functional but early. Curated packs and the activity feed are populated by the tracker and may be sparse on the dev network.
+</Aside>
+
+## Developer endpoints
+
+The agent's local API for transfers, on `http://localhost:7841/api/v1`:
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/share` | Share a local file or folder |
+| `GET` | `/search` | Search the network |
+| `POST` | `/download` | Start a download by CID |
+| `GET` | `/downloads/status` | Downloads with progress |
+| `POST` | `/downloads/{cid}/pause` · `/resume` · `/cancel` · `/retry` · `/seed` | Control one download |
+| `POST` | `/downloads/pause-all` · `/resume-all` · `/clear` | Batch controls |
+| `GET` | `/uploads/status` | Active shares and seeds |
+| `GET` | `/transfers/history` | Past transfers |
+| `GET` | `/library` | Everything in the local store, with storage usage |
+| `GET` | `/files/{cid}` | Export a stored file |
+| `GET` | `/connections` | Connected peers |
+| `GET` | `/node/stats` | Your agent's own stats |

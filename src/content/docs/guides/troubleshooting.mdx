@@ -1,0 +1,77 @@
+---
+title: Troubleshooting
+description: Fixes for the launch form, the Windows installer, the setup checks, chat and updates.
+---
+
+## Launching
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| *Launch Agent* opens the connect prompt and nothing else | No wallet extension, or it declined | Install a Solana wallet, unlock it, approve the site |
+| *This wallet already launched $XYZ* | One agent per wallet | Open it from the header, or connect another wallet |
+| *This build talks to a devnet launchpad but the wallet is connected to mainnet* | Wallet on the wrong cluster | Switch the wallet's network to match the portal (devnet on dev.stonkagents.com) |
+| Launch cost shows *(est.)* | The tracker's SOL price is stale | Wait for the form to re-price, or launch anyway; the tracker clamps the fee |
+| *Can't reach the launchpad right now. Retrying…* | Tracker unreachable | Wait; the gallery and the form retry on their own |
+| Transaction rejected / insufficient SOL | You declined, or the wallet cannot cover rent plus fee | Fund the wallet (on dev, wait for the test-token drip) |
+| Success screen says the tracker could not be reached | Launch is on chain, listing is delayed | Nothing to do; the token appears under Agents once the tracker answers |
+| No test tokens arrived on the dev portal | Drip already used today for this wallet, or the tracker's drip is off | One drip per wallet per 24 hours; try another wallet or come back tomorrow |
+
+## Installing on Windows
+
+| Symptom | Fix |
+|---------|-----|
+| **Download unavailable, try again** | The release manifest could not be read. Click to retry; check your connection |
+| Installer stuck at *Configuring StonkAgents…* | The setup helper generates keys and registers with the tracker; give it a minute |
+| Installer stuck on *command tools* | The npm install of `stonkagents` has a hard timeout; it will move on. Afterwards run **Configure StonkAgents AI** from the Start Menu to finish onboarding |
+| **Agent not detected** in the portal | Open *StonkAgents* from the Start Menu; if the service is not running, start it: `sc.exe start StonkAgentsDaemon` in an admin PowerShell, then click *Retry* |
+| Service will not stop during uninstall | Admin PowerShell: `sc.exe stop StonkAgentsDaemon` and `sc.exe stop StonkAgentsController`, then run the uninstaller again |
+| Port 7841 in use | Find the process: `netstat -ano \| findstr 7841`, stop it, then start the service |
+| Need to see what the agent is doing | Windows Event Viewer (Application log) records service start and stop errors |
+
+## Permissions step
+
+| Row / message | Fix |
+|---------------|-----|
+| **Network access** red, *Grant* | Adds the *StonkAgents Agent* firewall rule; accept the elevation prompt |
+| *The change needs administrator approval* | Click *Grant* again and accept the prompt |
+| *The controller cannot find your agent's program file* | Reinstall the agent |
+| *The StonkAgents Controller service is not running* | Admin PowerShell: `sc.exe start StonkAgentsController` |
+| *Only a StonkAgents site can be allowed to talk to your agent* | You opened the portal from a host the agent does not know. Use dev.stonkagents.com or stonkagents.com |
+| **Storage directory**: *Saved. Restart your agent to apply it.* | The folder is written to config; restart the service (`sc.exe stop` then `sc.exe start StonkAgentsDaemon`) |
+| *Still checking, this can take a moment on first run* | A check hit its time budget. Refresh in a few seconds |
+| *Your agent needs an update to finish setup* | The running agent predates the setup checks. Use the update banner |
+| *Too many changes at once* | Wait a second and retry |
+
+## Going live and the claim
+
+| Symptom | Fix |
+|---------|-----|
+| *Binding it to your token now…* never finishes | The wallet link may not be in place yet. Keep wallet and agent connected and refresh in a minute |
+| Claim refused: *wallet mismatch* | Connect the wallet that launched the token |
+| Claim refused: *already bound* | Another Agent ID already claimed this launch (for example an earlier install on another machine). There is no self-service re-bind yet |
+| Header dot is red, hero says *reconnecting* | The agent went away. The portal retries a few times, then calls it crashed; open *StonkAgents* from the Start Menu |
+
+## Agent chat
+
+| Symptom | Fix |
+|---------|-----|
+| The chat page shows the install panel | Your agent is not running or not reachable on `localhost:7841` |
+| *Insufficient credits* | Top up in Settings → Credits & API, or use Fast mode |
+| *Paid credits required* / Detailed is locked | Detailed mode needs paid credits |
+| An error naming the tracker or gateway | Your agent is fine; the LLM relay behind it failed. Try again shortly |
+| Holder chat says *Buy tokens to unlock chat* | The connected wallet does not hold the token |
+| Holder chat says *The owner's agent is offline* | The token's agent is not running; try later |
+
+## Updates
+
+| Symptom | Fix |
+|---------|-----|
+| Banner: *Update your agent to v…* | Click **Download update**, run the installer. It upgrades in place and keeps your identity |
+| Banner: *Your agent v… is no longer supported* | Same, but required: the portal will not work with the old build |
+| Installer refuses to run over the current version | Uninstall from Settings → Apps first, keep `%USERPROFILE%\.stonkagents`, then install |
+
+## Getting help
+
+- Contact: [stonkagents.com/contact](https://stonkagents.com/contact)
+- The portal's **feedback** form reaches the team directly
+- X: [@stonkagents](https://x.com/stonkagents)

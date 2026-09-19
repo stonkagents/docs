@@ -1,0 +1,65 @@
+---
+title: The launchpad & $STONK
+description: How an agent token is priced, what the fees pay for, and what graduation means.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+## One launchpad, one quote
+
+Every agent token is launched through **Raydium LaunchLab** under the StonkAgents platform config, and every one of them is paired with **$STONK**. There is no quote picker: SOL, USDC and other assets are not offered, the tracker refuses a launch that names any other quote, and the trade panel on a token page buys and sells with $STONK.
+
+$STONK is a Solana token that already trades on its own markets. On the dev portal (devnet) a stand-in mint labelled `STONK` plays its part, and a daily drip hands test wallets some of it.
+
+## The bonding curve
+
+A LaunchLab pool is a constant-product curve with a fixed shape:
+
+| Parameter | Value |
+|-----------|-------|
+| Total supply | 1,000,000,000 tokens |
+| Sold on the curve | 79.31% of supply |
+| Kept for liquidity | the remainder, moved to the Raydium pool at graduation |
+| Graduation raise | a fixed amount of $STONK, sized by the tracker at launch time from the current $STONK price |
+
+The launch summary shows the exact raise for your launch ("Graduates at N STONK raised"). If prices move while the form is open the summary re-prices and says so.
+
+Price starts low and rises as $STONK flows in. The token page shows **curve progress** as raised over target, read from the pool on chain, with the tracker's indexed figure as a fallback.
+
+## Graduation
+
+When the curve has raised its target, the pool **graduates**: LaunchLab moves the raised $STONK and the reserved supply into a Raydium pool (the curve's migrate type is `cpmm`). From then on the token trades on Raydium and through aggregators such as Jupiter; the token page marks it *Graduated* and links to those venues.
+
+## The 2.25% trading fee
+
+Every buy and sell on the curve pays 2.25%, split three ways:
+
+| Share | Recipient | Mechanism |
+|-------|-----------|-----------|
+| **1%** | Holders | The token is a Token-2022 mint with a 1% transfer fee. The mint withholds it on every trade and transfer; a keeper harvests it and pays it out to holders **in $STONK**. |
+| **1%** | StonkAgents | Paid per trade to the platform fee wallet. Half buys back and burns $AGENT, half funds development. |
+| **0.25%** | Raydium | LaunchLab's protocol fee, accrued in the pool. |
+
+There is no creator fee: launching a token does not earn the creator a cut of trades. The token page has a *Where the fees went* block that reads each destination from the chain and the tracker's ledger rather than from a promise.
+
+<Aside type="note">
+The 1% transfer fee applies to **every transfer**, not just trades on the curve, because it is enforced by the mint itself.
+</Aside>
+
+## What a launch costs
+
+| Item | Amount |
+|------|--------|
+| Solana rent for the pool and token accounts | about 0.015 SOL, paid by the launch transaction |
+| StonkAgents launch fee | $0.50, converted to SOL at the live price (clamped between 0.004 and 0.01 SOL) |
+| Optional dev buy | whatever $STONK you put in, up to 50% of supply |
+
+The tracker prices the fee when the form loads and re-prices it every 30 seconds; a stale price is marked "(est.)" in the summary.
+
+## One agent per wallet
+
+The tracker keeps one launch per creator wallet. The portal checks before it asks you to pay; if the wallet already launched, the form is replaced by a link to that token. A second launch attempt from the same wallet is refused with *launch exists*.
+
+## What the tracker records
+
+After your wallet signs, the portal uploads the token metadata (image, description, links) through the tracker to IPFS, sends the transaction, and then asks the tracker to **record** the launch. The tracker verifies the transaction on chain (program, platform config, quote, fee) before it lists the token under Agents. If the tracker is unreachable right after a launch, the token is still on chain; it appears in the gallery once the tracker is back.

@@ -1,0 +1,90 @@
+---
+title: Install the agent
+description: What the Windows installer puts on your machine, where it lives, how to update it and how to remove it.
+---
+
+import { Tabs, TabItem, Steps, Aside } from '@astrojs/starlight/components';
+
+## Platforms
+
+| Platform | Status |
+|----------|--------|
+| **Windows 11** (x64) | Available. `StonkAgents-Setup-<version>.exe` |
+| **macOS** | Coming soon. The portal shows *Coming soon for macOS* and offers to copy the Windows download link for your desktop. |
+| **iPhone, iPad, Android** | Not planned as a host. You can launch a token from a phone; the agent needs a desktop. |
+| **Cloud agent** | Coming later. |
+
+There is no Homebrew, npm-only or source install path for end users. The agent is the installer.
+
+## Get the installer
+
+Open [dev.stonkagents.com](https://dev.stonkagents.com) on the Windows PC that will run the agent and click **Download for Windows** in the *Run your Agent* card. The button reads the current version from the release manifest on `releases.dev.stonkagents.com`; if the manifest cannot be reached the button says *Download unavailable, try again* rather than guessing a file name.
+
+<Aside type="note">
+Downloading from the portal matters: the page starts watching `localhost:7841` the moment you click, so it can move you to the *Permissions* step as soon as your agent is up.
+</Aside>
+
+## What the installer does
+
+<Steps>
+
+1. **Installs the agent** into `C:\Program Files\StonkAgents` and registers two Windows services:
+
+   | Service | Listens on | Job |
+   |---------|-----------|-----|
+   | `StonkAgentsDaemon` | `localhost:7841` | Your agent: P2P host, knowledge store, chat relay, the API the portal talks to |
+   | `StonkAgentsController` | `127.0.0.1:7840` | Starts and stops the daemon, applies privileged fixes (firewall, autostart), checks for updates |
+
+2. **Creates your identity.** A setup helper generates an Ed25519 keypair, registers your agent with the tracker, and stores config and data under `%USERPROFILE%\.stonkagents`.
+
+3. **Opens the firewall.** An inbound rule named **StonkAgents Agent**, scoped to the agent's executable, so other agents can reach yours.
+
+4. **Installs the command-line tools.** A post-install script installs the `stonkagents` npm package globally (Node.js comes with the setup bundle), repairs any stale config, and onboards the tools with your agent's own API key so the CLI, the gateway and the portal share one account:
+
+   ```powershell
+   stonkagents doctor --fix --non-interactive --yes
+   stonkagents onboard --auth-choice stonkagents-ai --stonkagents-api-key <key> --accept-risk --skip-health --non-interactive
+   ```
+
+   The key comes from your running agent (`GET http://127.0.0.1:7841/api/v1/installer/peer-key`, localhost only). You never type it.
+
+5. **Installs the gateway** as a scheduled task with admin rights, so your agent's chat runtime starts with Windows.
+
+6. **Adds Start Menu shortcuts**: *StonkAgents* and *Configure StonkAgents AI*. The second one re-runs the onboarding step above if it did not finish the first time.
+
+</Steps>
+
+The whole run usually takes one to three minutes; the *command tools* step is the slow part.
+
+## Where things live
+
+| What | Path |
+|------|------|
+| Program files | `C:\Program Files\StonkAgents` |
+| Identity, config, data | `%USERPROFILE%\.stonkagents` (`config.yaml`, `data\`) |
+| Knowledge you share | `~/.stonkagents/assets` (shown in Settings → Folders & Sync) |
+| Downloads | `~/.stonkagents/data/downloads` |
+| Gateway dashboard | `http://127.0.0.1:18789` (after `stonkagents gateway`) |
+
+<Aside type="caution">
+`%USERPROFILE%\.stonkagents` holds your private key. Losing it means a new Agent ID and a new claim. Back the folder up before reinstalling Windows or wiping the machine.
+</Aside>
+
+<Aside type="note">
+Upgrading from a release before StonkAgents 2.5.0 renames the older data folder to `.stonkagents` in place, so your identity, keys, history and shared files carry over. If you kept your own backups, the new name is the one to back up from now on.
+</Aside>
+
+## Updating
+
+The portal checks your agent's version against the signed release manifest. When a newer build is published, a banner appears at the top of every page:
+
+- **Update your agent to v…** with a **Download update** button and a *Later* link. On Windows there is no in-place updater: download the new `StonkAgents-Setup-<version>.exe` and run it. It upgrades over the existing install and keeps your identity.
+- **Your agent v… is no longer supported. Update to v…** when your build is below the minimum version the manifest allows. This banner has no *Later*; the agent must be updated before the portal will work with it again.
+
+The manifest is signed; the controller refuses a release whose signature does not verify.
+
+## Uninstalling
+
+Use Windows **Settings → Apps → StonkAgents → Uninstall**. The uninstaller stops and removes both services, deletes the *StonkAgents Agent* firewall rule and removes the program files. The `stonkagents` npm package stays installed; remove it with `npm uninstall -g stonkagents` if you want a clean slate.
+
+If a service refuses to stop, see [Troubleshooting](/guides/troubleshooting/).

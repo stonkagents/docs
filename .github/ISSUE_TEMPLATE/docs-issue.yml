@@ -1,0 +1,30 @@
+name: Documentation issue
+description: Something on docs.stonkagents.com is wrong, missing or unclear.
+title: "[docs] "
+labels: ["documentation"]
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Page
+      description: The URL of the page, or the file under src/content/docs/.
+      placeholder: https://docs.stonkagents.com/guides/credits/
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong
+      description: Quote the sentence or describe the missing step. If the page and the product disagree, say what the product actually does.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What it should say
+      description: Optional. A suggested wording is welcome.
+  - type: input
+    id: version
+    attributes:
+      label: Agent or portal version
+      description: Optional. From the portal's update banner or the agent's /health response.

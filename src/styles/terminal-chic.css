@@ -1,0 +1,234 @@
+/* ==========================================================
+   StonkAgents Docs — Terminal Chic v2 for Starlight
+
+   Design principles:
+   - Monospace typography for terminal aesthetic
+   - Refined green accent (not raw neon) for readability
+   - Proper dark/light mode with real contrast
+   - Neon glow reserved for highlights, not body text
+   - Let Starlight's system do the heavy lifting
+   ========================================================== */
+
+/* ============================================================
+   1. DARK THEME (default)
+   ============================================================ */
+:root {
+  /* --- Accent: refined green (hue 142) ---
+     Brand green #00FF00 is kept for highlights only.
+     UI accent uses a toned-down green for readability. */
+  --sl-color-accent-low: hsl(140, 30%, 10%);
+  --sl-color-accent: hsl(142, 71%, 45%);
+  --sl-color-accent-high: hsl(142, 60%, 75%);
+
+  /* --- Gray scale: cold blue undertone (matches #080a0f) ---
+     white = primary text (headings), black = main background.
+     gray-1/gray-2 = body text — must be bright enough to read.
+     Starlight inverts these names between modes. */
+  --sl-color-white: hsl(220, 12%, 93%);
+  --sl-color-gray-1: hsl(220, 8%, 85%);
+  --sl-color-gray-2: hsl(220, 6%, 78%);
+  --sl-color-gray-3: hsl(220, 6%, 42%);
+  --sl-color-gray-4: hsl(222, 14%, 22%);
+  --sl-color-gray-5: hsl(224, 20%, 13%);
+  --sl-color-gray-6: hsl(226, 25%, 9%);
+  --sl-color-black: hsl(228, 30%, 4%);
+
+  /* --- Typography: monospace stack --- */
+  --sl-font: 'SF Mono', 'Fira Code', 'JetBrains Mono', 'Cascadia Code',
+    ui-monospace, 'Courier New', monospace;
+
+  /* --- Brand tokens (used in custom overrides, not Starlight core) --- */
+  --cb-neon: #00FF00;
+  --cb-red: #FF4D4D;
+  --cb-glow: 0 0 12px hsla(142, 80%, 50%, 0.25);
+  --cb-text-glow: 0 0 8px hsla(142, 80%, 50%, 0.3),
+    0 0 24px hsla(142, 80%, 50%, 0.1);
+}
+
+/* ============================================================
+   2. LIGHT THEME
+   ============================================================ */
+:root[data-theme='light'] {
+  /* --- Accent: darker green for light backgrounds --- */
+  --sl-color-accent-low: hsl(140, 40%, 90%);
+  --sl-color-accent: hsl(142, 64%, 34%);
+  --sl-color-accent-high: hsl(142, 72%, 18%);
+
+  /* --- Gray scale: inverted for light mode ---
+     white = primary text (dark on light bg), black = page bg. */
+  --sl-color-white: hsl(220, 18%, 12%);
+  --sl-color-gray-1: hsl(220, 14%, 20%);
+  --sl-color-gray-2: hsl(220, 8%, 34%);
+  --sl-color-gray-3: hsl(220, 6%, 52%);
+  --sl-color-gray-4: hsl(220, 8%, 72%);
+  --sl-color-gray-5: hsl(220, 12%, 88%);
+  --sl-color-gray-6: hsl(220, 16%, 94%);
+  --sl-color-black: hsl(220, 20%, 98%);
+
+  /* --- Toned-down brand tokens for light mode --- */
+  --cb-neon: hsl(142, 64%, 34%);
+  --cb-red: hsl(0, 65%, 42%);
+  --cb-glow: none;
+  --cb-text-glow: none;
+}
+
+/* ============================================================
+   3. GLOBAL BASE STYLES
+   ============================================================ */
+
+/* Tighten the sidebar-to-content gap.
+   Default --sl-content-width is 45rem (720px) — content gets centered
+   between sidebar and right edge, leaving a huge gap on wide screens.
+   Widen to 60rem so content fills more of the available space. */
+:root {
+  --sl-content-width: 60rem;
+  --sl-content-pad-x: 1.5rem;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================
+   4. CODE BLOCKS
+   ============================================================ */
+
+/* Expressive Code (Starlight's code blocks) — subtle border */
+.expressive-code .frame {
+  border: 1px solid var(--sl-color-gray-4);
+  border-radius: 6px;
+}
+
+/* Inline code — accent tint */
+:not(pre) > code {
+  color: var(--sl-color-accent-high);
+  background: var(--sl-color-accent-low);
+  border: 1px solid hsla(142, 40%, 50%, 0.1);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+/* ============================================================
+   5. SIDEBAR
+   ============================================================ */
+
+/* Section group labels — uppercase terminal style */
+.sidebar-content .top-level > li > details > summary span,
+.sidebar-content .top-level > li > a span {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: var(--sl-text-2xs);
+  font-weight: 700;
+}
+
+/* Active page link */
+nav[aria-label='Main'] a[aria-current='page'] {
+  font-weight: 600;
+}
+
+/* ============================================================
+   6. CONTENT AREA
+   ============================================================ */
+
+/* H1 — subtle glow in dark mode only */
+:root:not([data-theme='light']) .content-panel :is(h1) {
+  text-shadow: var(--cb-text-glow);
+}
+
+/* ============================================================
+   7. CARDS (Starlight <Card> and <LinkCard>)
+   ============================================================ */
+
+/* Card hover — accent border glow */
+.sl-link-card:hover,
+.card:hover {
+  box-shadow: var(--cb-glow);
+}
+
+/* ============================================================
+   8. BADGES
+   ============================================================ */
+.sl-badge {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+  font-size: var(--sl-text-2xs);
+}
+
+/* ============================================================
+   9. HERO (splash landing page)
+   ============================================================ */
+.hero {
+  padding-block: clamp(2rem, 8vw, 5rem);
+}
+
+:root:not([data-theme='light']) .hero h1 {
+  text-shadow: var(--cb-text-glow);
+}
+
+/* ============================================================
+   10. ASIDES (callout boxes) — green-tinted note variant
+   ============================================================ */
+
+/* Starlight uses --sl-color-green-* for success/tip asides.
+   We override the green hue to match our accent. */
+:root {
+  --sl-hue-green: 142;
+}
+
+/* ============================================================
+   11. BLOCKQUOTES
+   ============================================================ */
+blockquote {
+  border-inline-start-color: var(--sl-color-accent);
+}
+
+/* ============================================================
+   12. TABLES
+   ============================================================ */
+table th {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: var(--sl-text-2xs);
+}
+
+/* Subtle row highlight */
+table tbody tr:hover {
+  background: var(--sl-color-accent-low);
+}
+
+/* ============================================================
+   13. SCROLLBAR — dark mode only
+   ============================================================ */
+:root:not([data-theme='light']) {
+  scrollbar-color: var(--sl-color-gray-4) var(--sl-color-black);
+  scrollbar-width: thin;
+}
+
+:root:not([data-theme='light']) ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+:root:not([data-theme='light']) ::-webkit-scrollbar-track {
+  background: var(--sl-color-black);
+}
+
+:root:not([data-theme='light']) ::-webkit-scrollbar-thumb {
+  background: var(--sl-color-gray-4);
+  border-radius: 4px;
+}
+
+:root:not([data-theme='light']) ::-webkit-scrollbar-thumb:hover {
+  background: var(--sl-color-gray-3);
+}
+
+/* ============================================================
+   14. SELECTION
+   ============================================================ */
+::selection {
+  background: hsla(142, 71%, 45%, 0.3);
+  color: var(--sl-color-white);
+}

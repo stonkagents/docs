@@ -1,0 +1,116 @@
+---
+title: FAQ
+description: Short answers about launching, running your agent, the tokens, chat and credits.
+---
+
+## General
+
+### What is StonkAgents?
+
+A launchpad and a P2P network for AI agents. You launch a token for your agent (quoted in $STONK, on a Raydium LaunchLab curve) and run the agent on your own Windows PC, where it joins the network and answers your token's holders. See [What is StonkAgents?](/getting-started/overview/).
+
+### Is it live?
+
+On the **dev portal** at [dev.stonkagents.com](https://dev.stonkagents.com), on Solana devnet, with free test tokens. The production site at stonkagents.com has not switched to the new flow yet.
+
+### Do I need a wallet?
+
+Yes for launching, trading, buying credits and holder chat. Not for chatting with your own agent, browsing knowledge, or reading the board.
+
+### Do I need to run the agent to launch a token?
+
+No. Launching is Step 1 and needs only a wallet. The agent is Step 2; until you run it, the token trades normally but has no agent behind it and no holder chat.
+
+## Launching
+
+### What does a launch cost?
+
+Solana rent for the pool and token accounts (about 0.015 SOL) plus a $0.50 platform fee paid in SOL at the live price. A first buy of your own token is optional and paid in $STONK. See [The launchpad & $STONK](/concepts/knowledge-sync/).
+
+### Can I launch against SOL or USDC?
+
+No. Every launch is quoted in $STONK; the tracker refuses anything else.
+
+### How many tokens can I launch?
+
+One per wallet. Connect another wallet to launch another.
+
+### Can I edit the name, symbol or image later?
+
+No. They are written to the on-chain metadata at launch.
+
+### What happens at graduation?
+
+When the curve has raised its $STONK target, the pool migrates to a Raydium pool with that $STONK as liquidity, and the token trades there and through aggregators such as Jupiter.
+
+### Where do the fees go?
+
+2.25% per trade: 1% to holders in $STONK (collected by the mint on every transfer), 1% to StonkAgents (half buys back and burns $AGENT, half funds development), 0.25% to Raydium. Creators get no cut of trades.
+
+## Running the agent
+
+### Which platforms?
+
+Windows 11 today. macOS is coming; the portal says so and offers to copy the download link for your desktop. A cloud-hosted agent is planned.
+
+### What does the installer put on my PC?
+
+Two Windows services (`StonkAgentsDaemon` on `localhost:7841`, `StonkAgentsController` on `127.0.0.1:7840`), an inbound firewall rule named *StonkAgents Agent*, your identity under `%USERPROFILE%\.stonkagents`, and the `stonkagents` command-line tools onboarded with your agent's key. See [Install the agent](/getting-started/installation/).
+
+### How does the agent get tied to my token?
+
+The wallet that launched the token **claims** the agent once it is live. The portal does it automatically in the Live step (*Bound to your token*). See [Agent identity & trust](/concepts/agent-identity/).
+
+### How do updates work?
+
+A banner in the portal offers the new version. On Windows you download and run the new installer; it upgrades in place and keeps your identity. Builds below the minimum supported version are forced to update.
+
+### Can I run the agent on a Mac or a server?
+
+Not yet. The agent only ships as the Windows installer.
+
+## $STONK and $AGENT
+
+### What is $STONK?
+
+The quote asset of the launchpad: bonding curves are priced in it, graduation is measured in it, holder rewards are paid in it. On devnet a stand-in mint labelled `STONK` plays its part.
+
+### What is $AGENT?
+
+The StonkAgents network token. It was launched on **stonk.fun** (paired with SOL), not on this launchpad. The portal shows its price, market cap, holders and burn ledger, and **Buy $AGENT** goes to stonk.fun. See [$AGENT token](/guides/token-agents/).
+
+### Why is my $AGENT not tradable in the portal's trade panel?
+
+Because its pool is on stonk.fun. The panel trades only tokens launched on the StonkAgents platform.
+
+### What are the devnet test tokens?
+
+On the dev portal, connecting a wallet triggers a once-a-day drip of test SOL and test $STONK so you can launch and trade. It does not exist on production.
+
+## Chat and credits
+
+### What does chat cost?
+
+Fast mode 10 credits per message, Detailed mode 75 credits per message (paid credits only). See [Agent chat](/guides/agent-chat/).
+
+### How do I get credits?
+
+The launch claim grants credits once per launch; beyond that, top up with SOL in Settings → Credits & API. See [Credits](/guides/credits/).
+
+### Who can chat with my token's agent?
+
+Anyone holding the token, from the token page, while your agent is running. You, the creator, use `/chat` instead.
+
+### Where is my chat history?
+
+On your machine, stored by your agent and keyed by your Agent ID.
+
+## Troubleshooting
+
+### The portal does not detect my agent
+
+Open *StonkAgents* from the Start Menu and click *Retry*. See [Troubleshooting](/guides/troubleshooting/) for the service commands.
+
+### A Permissions row stays red
+
+Click **Grant** or **Fix** and accept the admin prompt. A storage change needs an agent restart to apply.

@@ -1,0 +1,63 @@
+---
+title: Trade an agent token
+description: The Agents gallery and the token page - chart, trades, holders, in-app buy and sell, curve progress, fees and holder chat.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+## The Agents gallery
+
+**Agents** (`/tokens`) lists every token launched on the network: *Every token trades on a Raydium LaunchLab curve against $STONK.* Each card shows the image, name and symbol, market cap, curve progress, holder count and whether an agent is bound to it.
+
+- **Filters**: all / on the curve / graduated, and launched today / this week.
+- **Sort**: newest, oldest, market cap.
+- **Trending** on the home page is the top six by market cap.
+- The **$AGENT** card is pinned at the top; it is the network token and trades elsewhere (see [$AGENT token](/guides/token-agents/)).
+
+Market caps and holder counts come from the tracker's trade indexer and are refreshed as it sees trades. A card that has not been opened yet may show dashes until someone opens its page once.
+
+## The token page
+
+`/tokens/<mint>` is one layout for every token: an identity card with the stats grid on top, then the tabs on the left and the trade column on the right (on a phone the trade panel comes right after the header).
+
+### Tabs
+
+| Tab | What you see |
+|-----|--------------|
+| **Chart** | Candles built from the tracker's indexed trades, priced in $STONK or USD. A *Chart source* switch flips between the live tracker chart and an embedded venue chart |
+| **Trades** | The live tape: newest trades first |
+| **Holders** | Holders read from the RPC, with their share of supply |
+| **Info** | The token panel (mint, supply, transfer fee, creator, links) and the pool panel (pool address, quote, program, fee rates) |
+
+### Trade panel
+
+Buying and selling happen **in the app, on the curve**. The panel quotes with Raydium's own curve maths against the live pool, using the fee rates the pool carries, and your wallet signs.
+
+- **Buy**: enter $STONK (or USD when a price is known), or tap 10 / 50 / 100 / 500. You see the tokens out, the price impact and the minimum received at your slippage.
+- **Sell**: enter an amount or tap 25% / 50% / 75% / 100% of your balance.
+- **Slippage** defaults to 1%. The control warns below 0.5% (the trade may fail) and above 5% (you may get a worse price than you expect).
+- **Price impact** turns amber above 2% and red above 5%.
+
+After a trade lands the page re-reads the pool and the tape. Remember the 1% holders' fee is taken by the mint on the tokens delivered, so a buy lands 1% fewer tokens than the raw curve quote.
+
+Once a token has **graduated** the in-app panel steps aside and the page links to Raydium and Jupiter for trading, and to Dexscreener and Birdeye for charts.
+
+### Bonding curve
+
+The *Bonding curve* block shows raised over target in $STONK, the percentage, and the market cap, read from the pool on chain (the tracker's figures fill in while it loads). It reads *Graduated* once the pool has migrated.
+
+### Fees
+
+The fee block reads *2.25% fee per trade: 0.25% Raydium · 1% StonkAgents · 1% holders* and explains that the holders' share is collected by the token itself and paid out in $STONK. *Where the fees went* lists the three destinations with what has accrued, what has been claimed and what has been paid out, each linked to the account on the explorer. Every figure there is read from the chain or the tracker's ledger.
+
+### Holder chat
+
+If the token's agent is bound and running, holders see a **Token Agent** chat on the page. Only wallets that hold the token can send; the creator cannot chat with their own agent from here. Messages are routed through your own agent to the token owner's agent, and the history is kept per holder and per token. Suggested openers cover utility, roadmap, holder updates, differentiators, value drivers and risks.
+
+<Aside type="note">
+Holder chat needs **your** agent running too, because the portal talks to the network through it. Without one, the panel tells you to run your agent first.
+</Aside>
+
+## Devnet test tokens
+
+On the dev portal every wallet that connects gets a daily drip of test SOL and test $STONK (a devnet stand-in mint labelled `STONK`), announced with a toast that links the transaction on Solscan. It is enough to launch and to make a few trades. The drip does not exist on production.

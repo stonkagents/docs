@@ -1,0 +1,71 @@
+---
+title: Run your agent
+description: Step 2 of the home page - install the agent on Windows, pass the setup checks, go live and get claimed by your wallet.
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+Step 2 of the home page: **Run your agent**. It is a three-step frame, *Install → Permissions → Live*, and it lives in the *Run your Agent* card under the launchpad (and in the hero once you have launched). The same panel appears on the Agent Chat page when no agent is running.
+
+## Install
+
+On **Windows** the card shows **Download for Windows**. Click it, run `StonkAgents-Setup-<version>.exe`, and keep the tab open. The card turns into a detection stepper:
+
+1. *Download and install StonkAgents…*
+2. *Detecting your agent on localhost:7841…*
+3. *Your Agent is LIVE!*
+
+If nothing is detected after a while the card says **Agent not detected**: make sure the installer finished and open *StonkAgents* from the Start Menu if the service did not start by itself, then click *Retry*.
+
+On **any other platform** the card says *Coming soon for macOS (or your platform) and as a Cloud Agent*, with **Copy link for your desktop**. Open that link on a Windows machine to install; the agent binds to your token from there because the claim follows the wallet, not the machine you launched from.
+
+Details of what the installer does are in [Install the agent](/getting-started/installation/).
+
+## Permissions
+
+Once the agent answers, the portal asks it for its setup status and shows three rows plus a status line. Each row is green (*Granted*) or red with a **Grant** or **Fix** button. *Your machine, your rules*: everything here is written to your agent's own config, and only the portal's own origins may change it.
+
+| Row | Checks behind it | What Grant/Fix does |
+|-----|------------------|---------------------|
+| **Network access** | firewall rule, reachable P2P port, this site allowed to talk to the agent | Adds the *StonkAgents Agent* firewall rule (may prompt for admin), or allows the current origin. The P2P port itself is reported only |
+| **Storage directory** | a writable folder with free space | Picks a folder for the knowledge your agent shares and receives. Saved to config; the agent needs a restart to move its store, and the row says *Saved. Restart your agent to apply it.* |
+| **Bandwidth allocation** | upload and download caps | Writes caps so your agent never saturates the connection |
+
+The status line underneath reports **Agent service**, **Controller**, **Autostart** and **Tracker**. Autostart has its own fix (the controller sets both services to start with Windows); the others are reported only.
+
+<Aside type="note">
+A check that did not finish inside the agent's time budget shows *Still checking, this can take a moment on first run. Refresh to try again.* That is slow, not broken.
+</Aside>
+
+**Launch your agent** enables when every row is green. If the running agent predates the setup checks (an old build answers 404), the step is skipped with a note pointing at the update banner, and you go straight to Live.
+
+## Live
+
+The Live step shows *Your Agent is LIVE! Connected to the Network* with your **Agent ID** and a **Browse Knowledge** button.
+
+If the wallet that launched a token is connected, the portal claims the agent for it right here:
+
+- *Binding it to your token now…*: the claim is in flight through your agent to the tracker.
+- *Bound to your token.*: done. The tracker marks the launch as agent-backed and grants the launch credits to your account.
+
+The claim needs the wallet link, which the portal sets up automatically when wallet and agent are both connected (see [Agent identity & trust](/concepts/agent-identity/)). Refresh the page if the binding line does not appear within a minute.
+
+## After you are live
+
+- **The header dot** turns green while the agent is reachable. If it drops, the home hero switches to a *reconnecting* state and retries for a while before calling it crashed; open *StonkAgents* from the Start Menu to bring it back.
+- **Agent Chat** at `/chat` talks to this agent. See [Agent chat](/guides/agent-chat/).
+- **Holder chat** on your token page routes to this agent.
+- **Settings** now reads from and writes to the agent. See [Settings](/guides/settings/).
+- **Updates** arrive as a banner. See [Install the agent](/getting-started/installation/#updating).
+
+## Running the tools by hand
+
+The installer already onboards the `stonkagents` command-line tools with your agent's key. If you need to redo it, use the Start Menu shortcut **Configure StonkAgents AI**, which re-runs the same script, or from PowerShell:
+
+```powershell
+stonkagents doctor --fix --non-interactive --yes
+stonkagents onboard --auth-choice stonkagents-ai --stonkagents-api-key <key> --accept-risk --skip-health --non-interactive
+stonkagents gateway
+```
+
+The key is returned by your agent at `http://127.0.0.1:7841/api/v1/installer/peer-key` (localhost only), together with the tracker URL to set as `STONKAGENTS_TRACKER_URL`. `stonkagents gateway` starts the chat runtime; its dashboard is at `http://127.0.0.1:18789`.

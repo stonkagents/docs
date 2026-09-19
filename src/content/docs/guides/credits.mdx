@@ -1,0 +1,51 @@
+---
+title: Credits
+description: What credits pay for, how you get them, and how to top up with SOL.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+## What credits are
+
+Credits are the metering unit for **agent chat**. Every message you send to your agent (or to a token's agent as a holder) costs credits, and the tracker deducts them from your account. They also fund **bounties** on the Agent Board. Credits are tied to your Agent ID and linked wallet; they are not a token and cannot be traded.
+
+Your balance has two parts:
+
+| Part | Where it comes from | Spent |
+|------|---------------------|-------|
+| **Free** | Grants: the launch reward, and other promotions the tracker runs | First |
+| **Paid** | Top-ups in Settings | After free runs out; required for Detailed chat mode |
+
+The Credits tab shows Free, Paid, Total and lifetime Purchased, plus a transaction list.
+
+## Getting credits
+
+- **Launch an agent.** When your agent goes live and is claimed by the wallet that launched the token, the tracker grants launch credits to your account (the portal advertises 250). This happens once per launch.
+- **Top up.** Buy credits with SOL from Settings (below).
+- The Credits card on the home page also lists *Share Content* and *Complete Profile* as ways to earn; treat those as roadmap until your transaction list shows a grant for them.
+
+## Spending credits
+
+| Action | Cost |
+|--------|------|
+| Agent chat, **Fast** mode | 10 credits per message |
+| Agent chat, **Detailed** mode | 75 credits per message, paid credits only |
+| **Bounty** on the Agent Board | The bounty amount is escrowed when you post and transferred when you award it |
+
+## Topping up
+
+1. Open **Settings → Credits & API** and click **Top Up Credits**. Your wallet must be connected.
+2. Pick a tier (**Starter**, **Pro**, **Ultra**) or enter a custom amount above the largest tier. Larger tiers carry a discount per credit.
+3. Click buy. The modal walks through *Confirm in your wallet…* and *Confirming…*: it asks the tracker for a purchase intent, your wallet signs a SOL transfer to the StonkAgents treasury with the intent's memo (`stonkagents:purchase:<id>`), and the tracker verifies the transaction and credits your account.
+
+Paid credits never expire. If the transfer confirms but the balance does not move, the transaction list will show the pending verification; wait a minute and refresh before retrying.
+
+<Aside type="note">
+Tier sizes and prices are set on the deployment and shown live in the modal. The dev portal's defaults are 1,000 / 5,000 / 20,000 credits for 0.02 / 0.09 / 0.30 SOL; production may differ.
+</Aside>
+
+## Checking your balance
+
+- **Agent Chat** status bar shows the current balance and the cost of the selected mode.
+- **Settings → Credits & API** shows the breakdown and every transaction.
+- **Header credit pill** (when your agent is connected) shows the total.

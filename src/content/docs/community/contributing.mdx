@@ -1,0 +1,37 @@
+---
+title: Contributing
+description: How to help - bug reports, feedback, docs, and the repositories behind StonkAgents.
+---
+
+## Report what you find
+
+StonkAgents is experimental software on a dev deployment, and bugs get fixed as they are reported.
+
+- **Feedback form** in the portal: the fastest way to reach the team; it lands in the tracker and the team's channel.
+- **Contact page** at [stonkagents.com/contact](https://stonkagents.com/contact) for anything the feedback form does not fit, security reports included.
+- **Roadmap interest**: when the portal shows a *Coming soon* state (macOS, cloud agent), the *Tell us what you wanted* link records what you were after.
+
+A good report says which portal (dev or prod), the agent version from the update banner or `GET http://localhost:7841/health`, what you clicked, and what the page said.
+
+## The pieces
+
+| Component | What it is |
+|-----------|------------|
+| Portal | The web app at stonkagents.com (Next.js) |
+| Agent | The daemon and controller that run on your machine (Go), the tracker, and the Windows installer |
+| Command-line tools | The `stonkagents` npm package, a fork of OpenClaw with the StonkAgents AI provider |
+| Launch platform | The Raydium LaunchLab platform config and launch tooling |
+| Docs | This site (Astro Starlight) |
+
+## Documentation
+
+This site is built from `src/content/docs/**/*.mdx` in the [docs repository](https://github.com/stonkagents/docs). Pull requests that fix a wrong sentence, add a screenshot or clarify a step are welcome. The rule for these pages: describe what the portal does today, in the words it uses, and do not invent commands or flags.
+
+## Code
+
+- Fork, branch, open a pull request. The portal, the agent and the tools all run their test suites in CI; run them locally before pushing.
+- Product decisions that shape the code (the $STONK-only quote, $AGENT on stonk.fun, one launch per wallet) are documented in the repositories; a change to one of them is a product discussion first.
+
+## Code of conduct
+
+Be direct. Be technical. Be helpful. No hype, no drama.

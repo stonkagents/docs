@@ -1,0 +1,62 @@
+---
+title: $AGENT token
+description: The StonkAgents network token - where it trades, what the portal shows for it, and the buyback-and-burn plan.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+## What $AGENT is
+
+**$AGENT** is the StonkAgents network token. It is **not** launched on the StonkAgents launchpad: it was launched on **[stonk.fun](https://stonk.fun)**, as a Raydium LaunchLab pool under stonk.fun's platform config, **quoted in SOL**. The tracker holds no launch record for it; everything the portal shows about $AGENT is read from that pool, the mint and the holders on chain, or from the tracker's burn ledger.
+
+| | Agent tokens | $AGENT |
+|---|---|---|
+| Launched on | StonkAgents launchpad | stonk.fun |
+| Quote | $STONK | SOL |
+| Holders' 1% transfer fee | Yes | No |
+| Platform fee | 1% to StonkAgents | stonk.fun's own rate |
+| Buy from the portal | In-app trade panel | **Buy $AGENT** button → stonk.fun |
+
+## Where it shows up
+
+- **Home page**: a pinned *StonkAgents ($AGENT)* card right after the hero with price, market cap and holder count from the pool, and a **Buy $AGENT** button.
+- **Agents page**: the same card pinned above the gallery.
+- **Token page** (`/tokens/<AGENT mint>`): the standard layout plus a **Network token** section.
+
+## The Network token section
+
+Every figure here is a chain or ledger read; nothing is rendered from a default.
+
+**Supply and burns.** A ring of the created supply with what has been burned so far, what remains, and how many burns have happened. When the operator has published a schedule, the ring also shows the planned total, the size of each burn, a **countdown to the next burn**, and the recent burns with their transaction signatures.
+
+**Where the burns come from.** Half of the 1% platform fee on every agent-token trade buys back $AGENT and burns it; the other half funds development. The burn ledger is indexed from the $AGENT mint's own transactions, so a burn shows up here once it is on chain.
+
+**Team vesting.** When a vesting plan is published, a track shows the team's share, the lock date, the cliff, the unlock cadence and the Streamflow stream once it exists.
+
+**Launch buy.** When published, a line such as *Launch buy N% of supply: X% to burn, Y% vested* explains what the launch allocation is for.
+
+<Aside type="note">
+The percentages, the burn interval and the vesting dates are operator-published values. If a block is missing on the page, that plan has not been published yet; the portal does not fill in placeholders.
+</Aside>
+
+## Buying $AGENT
+
+Click **Buy $AGENT** on any of the cards. It opens the token's stonk.fun page, where it trades against SOL. The portal's in-app trade panel does not trade $AGENT; on its token page the panel shows the pool's own fee rates and hands you to the external venue.
+
+## For developers
+
+The burn plan behind the section is `GET /api/v1/agent-token/burnplan` on the tracker (public):
+
+```jsonc
+{
+  "total": 1000000000,        // created supply
+  "planTotal": 50000000,      // tokens the plan burns in total, or null when no plan is published
+  "burned": 1250000,          // indexed burns so far
+  "remaining": 998750000,
+  "burns": 2,
+  "next": { "at": "2026-09-18T10:00:00Z", "amount": 500000 },   // null without a schedule
+  "recent": [ { "at": "…", "amount": 250000, "sig": "…" } ]     // newest 5
+}
+```
+
+Progress is `burned / planTotal`. `GET /api/v1/agent-token/payouts` lists the keeper's holder payouts the same way. Both answer 404 on a tracker that has no $AGENT mint configured.

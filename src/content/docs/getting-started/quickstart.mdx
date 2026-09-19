@@ -1,0 +1,73 @@
+---
+title: Quickstart
+description: Launch a token for your agent and bring the agent online in about ten minutes.
+banner:
+  content: StonkAgents is in active development. This guide follows the dev portal at dev.stonkagents.com.
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+## What you need
+
+- A **Solana wallet** browser extension (the portal names Phantom in its messages; any wallet the portal detects works).
+- A little **SOL** for the launch fee and rent, and some **$STONK** if you want a first buy of your own token. On the dev portal a test-token drip covers this for you (see below).
+- A **Windows 11 PC** to run your agent. macOS is coming; on a Mac or phone you can still launch, and the portal offers to copy the install link for your desktop.
+
+<Aside type="tip">
+**On the dev portal (devnet)**, connecting a wallet triggers a once-a-day drip of test SOL and test $STONK, so you can launch and trade without funding anything. A toast tells you when it lands. This drip does not exist on production.
+</Aside>
+
+## Step 1: Launch your StonkAgent
+
+<Steps>
+
+1. **Open [dev.stonkagents.com](https://dev.stonkagents.com) and connect your wallet.**
+
+   The hero reads *Launch your StonkAgent* with two bullets: *Tokenize against $STONK* and *Run your agent*. Click **Connect wallet**, approve in the extension.
+
+2. **Click Launch Agent.**
+
+   The launch form opens. Fill in:
+   - **Name** (up to 32 characters) and **symbol** (up to 10 characters, letters, numbers and `$`).
+   - **Image** (PNG, JPEG or WebP, under 2 MB). Required. The artwork studio lets you crop it and stamp the symbol on it.
+   - **Description** (up to 280 characters) and optional website, X and Telegram links.
+   - **Dev buy** (optional): a first buy bundled into the launch, as a share of supply (up to 50%) or an amount of $STONK.
+
+3. **Read the launch summary and sign.**
+
+   The summary on the right is a receipt: Launchpad *Raydium LaunchLab*, paired with *$STONK*, the $STONK raise the curve graduates at, a supply of 1 billion, the 2.25% trading fee split, and the launch cost (rent plus $0.50 in SOL at the live price). Click the button, approve the transaction in your wallet.
+
+4. **Done.** Your token is on chain and the tracker lists it under **Agents**. The hero now shows **View your agent**, and the header gets a *Your agent* link.
+
+</Steps>
+
+One launch per wallet. Connect a different wallet to launch another.
+
+## Step 2: Run your agent
+
+<Steps>
+
+1. **Download for Windows.**
+
+   Under the launchpad, the *Run your Agent* card shows three steps: *Install*, *Permissions*, *Live*. Click **Download for Windows** to get `StonkAgents-Setup-<version>.exe` from `releases.dev.stonkagents.com`.
+
+2. **Run the installer.**
+
+   It installs the StonkAgents daemon and controller as Windows services, adds an inbound firewall rule named *StonkAgents Agent*, installs the `stonkagents` command-line tools and onboards them with your agent's key. The "command tools" step can take a minute or two. Leave the portal tab open: it watches `localhost:7841` and moves on when your agent answers.
+
+3. **Grant permissions.**
+
+   The *Permissions* step lists three rows: **Network access**, **Storage directory** and **Bandwidth allocation**, with a status line for the agent service, controller, autostart and tracker. Anything red has a **Grant** or **Fix** button. When every row is green, click **Launch your agent**.
+
+4. **Live.**
+
+   You see *Your Agent is LIVE!* with your **Agent ID**. Because your wallet is connected, the portal claims the agent for it: *Binding it to your token now…* then *Bound to your token.* The claim also grants launch credits for agent chat.
+
+</Steps>
+
+## What you can do now
+
+- **Chat with your agent** at `/chat`: see [Agent chat](/guides/agent-chat/).
+- **Watch your token** on its page under Agents: chart, trades, holders, and the buy/sell panel: see [Trade an agent token](/guides/knowledge-sync/).
+- **Let holders talk to it.** Anyone holding your token can open the holder chat on your token page and talk to the agent running on your PC.
+- **Keep it updated.** When a newer agent is published the portal shows an *Update your agent* banner; on Windows you download and run the new installer.
